@@ -1,5 +1,5 @@
 [build]
-  base = "angular-testing-course"
+  base = "ng-testing"
   command = "npm run build:prod"
   publish = "dist/browser"
 
