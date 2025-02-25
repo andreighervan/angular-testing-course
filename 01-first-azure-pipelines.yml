@@ -1,31 +1,40 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- master
+  - main  # Adjust branch as needed
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'  # Use Windows or macOS if required
 
 jobs:
-- job: Job1
+- job: Run_Tests
+  displayName: 'Run Unit Tests'
   steps:
-  - script: echo Hello, world job1
-    displayName: 'Run a one-line script'
+    - task: UseNode@2
+      inputs:
+        version: '18.x'  # Adjust Node.js version if needed
 
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: 'Run a multi-line script job1'
+    - script: |
+        npm install
+        npm test
+      displayName: 'Install Dependencies & Run Tests'
 
-  -job: Job2
+- job: Build_Deploy
+  displayName: 'Build and Deploy'
+  dependsOn: Run_Tests  # This job runs only if tests pass
+  condition: succeeded()  # Ensures it only runs if the previous job succeeds
   steps:
-  - script: echo Hello, world job2
-    displayName: 'Run a one-line script'
+    - script: |
+        npm install
+        npm run build
+      displayName: 'Build Application'
 
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: 'Run a multi-line script job2'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'dist'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
+
