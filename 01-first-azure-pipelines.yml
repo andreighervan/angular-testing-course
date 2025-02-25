@@ -12,20 +12,20 @@ pool:
 jobs:
 - job: Job1
   steps:
-- script: echo Hello, world job1
-  displayName: 'Run a one-line script'
+  - script: echo Hello, world job1
+    displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script job1'
+  - script: |
+      echo Add other tasks to build, test, and deploy your project.
+      echo See https://aka.ms/yaml
+    displayName: 'Run a multi-line script job1'
 
   -job: Job2
   steps:
-- script: echo Hello, world job2
-  displayName: 'Run a one-line script'
+  - script: echo Hello, world job2
+    displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script job2'
+  - script: |
+      echo Add other tasks to build, test, and deploy your project.
+      echo See https://aka.ms/yaml
+    displayName: 'Run a multi-line script job2'
