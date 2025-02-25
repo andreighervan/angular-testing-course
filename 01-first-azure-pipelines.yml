@@ -2,15 +2,15 @@ trigger:
   - main  # Adjust branch as needed
 
 pool:
-  vmImage: 'ubuntu-latest'  # Use Windows or macOS if required
+  vmImage: 'ubuntu-latest'  # Change to 'windows-latest' or 'macos-latest' if needed
 
 jobs:
 - job: Run_Tests
   displayName: 'Run Unit Tests'
   steps:
-    - task: UseNode@2
+    - task: NodeTool@0  # Correct task name for setting up Node.js
       inputs:
-        version: '18.x'  # Adjust Node.js version if needed
+        versionSpec: '18.x'  # Specify Node.js version
 
     - script: |
         npm install
@@ -19,9 +19,13 @@ jobs:
 
 - job: Build_Deploy
   displayName: 'Build and Deploy'
-  dependsOn: Run_Tests  # This job runs only if tests pass
+  dependsOn: Run_Tests  # Runs only if tests pass
   condition: succeeded()  # Ensures it only runs if the previous job succeeds
   steps:
+    - task: NodeTool@0  # Ensure Node.js is available
+      inputs:
+        versionSpec: '18.x'
+
     - script: |
         npm install
         npm run build
@@ -37,4 +41,3 @@ jobs:
       inputs:
         pathToPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'drop'
-
